@@ -3,7 +3,7 @@ plugins:
   extractors:
   - name: tap-linear
     namespace: tap_linear
-    pip_url: git+https://github.com/renesteeman/tap-linear.git
+    pip_url: -e .
     executable: tap-linear
     description: Singer tap for Linear, built with the Meltano SDK
     capabilities:
@@ -19,3 +19,7 @@ plugins:
       kind: date_iso8601
       label: Start Date
       description: The earliest record date to sync
+    - name: api_url
+      kind: string
+      label: API URL
+      description: The Linear GraphQL API endpoint

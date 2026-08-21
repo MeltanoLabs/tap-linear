@@ -1,0 +1,35 @@
+from singer_sdk import typing as th
+
+from tap_linear.schemas.common import project_status_ref, team_ref, user_ref
+
+projectsSchema = th.PropertiesList(
+    th.Property("id", th.StringType),
+    th.Property("name", th.StringType),
+    th.Property("slugId", th.StringType),
+    th.Property("identifier", th.StringType),
+    th.Property("description", th.StringType),
+    th.Property("color", th.StringType),
+    th.Property("icon", th.StringType),
+    th.Property("priority", th.IntegerType),
+    th.Property("priorityLabel", th.StringType),
+    th.Property("progress", th.NumberType),
+    th.Property("scope", th.NumberType),
+    th.Property("health", th.StringType),
+    th.Property("healthUpdatedAt", th.DateTimeType),
+    th.Property("startDate", th.DateType),
+    th.Property("targetDate", th.DateType),
+    th.Property("sortOrder", th.NumberType),
+    th.Property("trashed", th.BooleanType),
+    th.Property("url", th.StringType),
+    th.Property("createdAt", th.DateTimeType),
+    th.Property("updatedAt", th.DateTimeType),
+    th.Property("archivedAt", th.DateTimeType),
+    th.Property("startedAt", th.DateTimeType),
+    th.Property("completedAt", th.DateTimeType),
+    th.Property("canceledAt", th.DateTimeType),
+    th.Property("autoArchivedAt", th.DateTimeType),
+    th.Property("status", project_status_ref()),
+    th.Property("creator", user_ref()),
+    th.Property("lead", user_ref()),
+    th.Property("leadTeam", team_ref()),
+).to_dict()
