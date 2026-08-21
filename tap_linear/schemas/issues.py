@@ -1,38 +1,53 @@
 from singer_sdk import typing as th
 
+from tap_linear.schemas.common import (
+    cycle_ref,
+    issue_ref,
+    label_ref,
+    named_ref,
+    state_ref,
+    team_ref,
+    user_ref,
+)
+
 issuesSchema = th.PropertiesList(
     th.Property("id", th.StringType),
+    th.Property("identifier", th.StringType),
+    th.Property("number", th.NumberType),
     th.Property("title", th.StringType),
+    th.Property("description", th.StringType),
     th.Property("url", th.StringType),
+    th.Property("branchName", th.StringType),
+    th.Property("priority", th.NumberType),
+    th.Property("priorityLabel", th.StringType),
+    th.Property("estimate", th.NumberType),
+    th.Property("dueDate", th.DateType),
+    th.Property("sortOrder", th.NumberType),
+    th.Property("subIssueSortOrder", th.NumberType),
+    th.Property("customerTicketCount", th.IntegerType),
+    th.Property("trashed", th.BooleanType),
+    th.Property("createdAt", th.DateTimeType),
     th.Property("updatedAt", th.DateTimeType),
-    th.Property(
-        "creator",
-        th.ObjectType(
-            th.Property("id", th.StringType),
-            th.Property("name", th.StringType),
-            th.Property("email", th.StringType),
-        ),
-    ),
-    th.Property(
-        "assignee",
-        th.ObjectType(
-            th.Property("id", th.StringType),
-            th.Property("name", th.StringType),
-            th.Property("email", th.StringType),
-        ),
-    ),
-    th.Property(
-        "project",
-        th.ObjectType(
-            th.Property("id", th.StringType),
-            th.Property("name", th.StringType),
-        ),
-    ),
-    th.Property(
-        "team",
-        th.ObjectType(
-            th.Property("id", th.StringType),
-            th.Property("name", th.StringType),
-        ),
-    ),
+    th.Property("archivedAt", th.DateTimeType),
+    th.Property("startedAt", th.DateTimeType),
+    th.Property("completedAt", th.DateTimeType),
+    th.Property("canceledAt", th.DateTimeType),
+    th.Property("autoArchivedAt", th.DateTimeType),
+    th.Property("autoClosedAt", th.DateTimeType),
+    th.Property("triagedAt", th.DateTimeType),
+    th.Property("snoozedUntilAt", th.DateTimeType),
+    th.Property("addedToCycleAt", th.DateTimeType),
+    th.Property("addedToProjectAt", th.DateTimeType),
+    th.Property("addedToTeamAt", th.DateTimeType),
+    th.Property("slaStartedAt", th.DateTimeType),
+    th.Property("slaBreachesAt", th.DateTimeType),
+    th.Property("creator", user_ref()),
+    th.Property("assignee", user_ref()),
+    th.Property("state", state_ref()),
+    th.Property("team", team_ref()),
+    th.Property("project", named_ref()),
+    th.Property("projectMilestone", named_ref()),
+    th.Property("cycle", cycle_ref()),
+    th.Property("parent", issue_ref()),
+    th.Property("labels", th.ArrayType(label_ref())),
 ).to_dict()

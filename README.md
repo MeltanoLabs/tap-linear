@@ -4,6 +4,41 @@ This is a [Singer](https://singer.io) tap that produces JSON-formatted data
 following the [Singer
 spec](https://github.com/singer-io/getting-started/blob/master/SPEC.md).
 
+## Streams
+
+Every stream is replicated incrementally on `updatedAt`, keyed on `id`, and
+includes archived records so that rows already in the destination keep being
+updated after they are archived in Linear.
+
+| Stream              | Linear query        |
+| ------------------- | ------------------- |
+| `Issues`            | `issues`            |
+| `Teams`             | `teams`             |
+| `Projects`          | `projects`          |
+| `Users`             | `users`             |
+| `Cycles`            | `cycles`            |
+| `Comments`          | `comments`          |
+| `IssueLabels`       | `issueLabels`       |
+| `WorkflowStates`    | `workflowStates`    |
+| `ProjectMilestones` | `projectMilestones` |
+| `Initiatives`       | `initiatives`       |
+| `ProjectUpdates`    | `projectUpdates`    |
+
+Related records are embedded rather than referenced by id, so an issue carries
+its `creator`, `assignee`, `state`, `team`, `project`, `projectMilestone`,
+`cycle` and `parent` inline, plus a flattened `labels` array.
+
+`Users` includes deactivated members, since they still own historic issues.
+
+### Adding a stream
+
+Each stream is three pieces: a query in `tap_linear/queries/`, a schema in
+`tap_linear/schemas/`, and a class in `tap_linear/streams.py` that ties them
+together and sets `query_name` to the Linear connection field being read. Add
+the class to `STREAM_TYPES` in `tap_linear/tap.py`. The test suite asserts that
+a stream's declared schema matches the fields its query selects, so the two
+cannot drift apart.
+
 ## Installation
 
 See the getting-started guide:
@@ -80,5 +115,18 @@ With a `catalog.json` that describes field and table selections, the tap can be 
 $ tap-linear --config config.json --catalog catalog.json
 ```
 
-Issues are written to standard output following the Singer specification. The
+Records are written to standard output following the Singer specification. The
 resultant stream of JSON data can be consumed by a Singer target.
+
+## Development
+
+Install the project with its dev dependencies and run the test suite:
+
+```bash
+$ poetry install
+$ poetry run pytest tap_linear/
+```
+
+The tests in `tap_linear/tests/test_streams.py` need no credentials. The
+standard SDK tap tests in `test_core.py` call the live API and expect a
+`LINEAR_AUTH_TOKEN` environment variable.

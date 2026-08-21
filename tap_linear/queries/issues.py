@@ -3,7 +3,8 @@ query Issues($next: String, $replicationKeyValue: DateTimeOrDuration) {
     issues(
         first: 100
         after: $next
-        filter: { updatedAt: {gt: $replicationKeyValue } }
+        includeArchived: true
+        filter: { updatedAt: { gte: $replicationKeyValue } }
     ) {
         pageInfo {
             hasNextPage
@@ -11,9 +12,35 @@ query Issues($next: String, $replicationKeyValue: DateTimeOrDuration) {
         }
         nodes {
             id
+            identifier
+            number
             title
+            description
             url
+            branchName
+            priority
+            priorityLabel
+            estimate
+            dueDate
+            sortOrder
+            subIssueSortOrder
+            customerTicketCount
+            trashed
+            createdAt
             updatedAt
+            archivedAt
+            startedAt
+            completedAt
+            canceledAt
+            autoArchivedAt
+            autoClosedAt
+            triagedAt
+            snoozedUntilAt
+            addedToCycleAt
+            addedToProjectAt
+            addedToTeamAt
+            slaStartedAt
+            slaBreachesAt
             creator {
                 id
                 name
@@ -24,13 +51,40 @@ query Issues($next: String, $replicationKeyValue: DateTimeOrDuration) {
                 name
                 email
             }
-            project {
+            state {
                 id
                 name
+                type
+                color
             }
             team {
                 id
                 name
+                key
+            }
+            project {
+                id
+                name
+            }
+            projectMilestone {
+                id
+                name
+            }
+            cycle {
+                id
+                number
+                name
+            }
+            parent {
+                id
+                identifier
+            }
+            labels(first: 50) {
+                nodes {
+                    id
+                    name
+                    color
+                }
             }
         }
     }
